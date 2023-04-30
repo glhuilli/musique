@@ -1,60 +1,55 @@
-import os
-from typing import Any, Dict, List
 import json
+import os
+from typing import Iterable, NamedTuple
 
 import openai
 
+from musique.utils.json_schema import JSON_SCHEMA
+
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
-_MODEL = "text-davinci-003"
-_TEMPERATURE = 0.7
-_MAX_TOKENS = 60
-_TOP_P = 1.0
-_FREQUENCY_PENALTY = 0.0
-_PRESENCE_PENALTY = 1
+_MODEL = 'gpt-3.5-turbo'
 
 
-def ask_chatgpt(prompt: str) -> Dict[str, Any]:
+class Song(NamedTuple):
+    """
+    Immutable object that stores a NeurIPS conference url and year
+    """
+    artist: str
+    title: str
+
+
+def ask_chatgpt(prompt: str) -> Iterable[Song]:
     """
     Return processed answer from chatGPT given a prompt
     """
-    response = openai.Completion.create(
-      model=_MODEL,
-      prompt=prompt,
-      temperature=_TEMPERATURE,
-      max_tokens=_MAX_TOKENS,
-      top_p=_TOP_P,
-      frequency_penalty=_FREQUENCY_PENALTY,
-      presence_penalty=_PRESENCE_PENALTY
-    )
+    prompt_with_format = f'{prompt} in using the following json schema {JSON_SCHEMA}'
+    response = openai.ChatCompletion.create(model=_MODEL,
+                                            messages=[{
+                                                "role":
+                                                "user",
+                                                "content":
+                                                prompt_with_format
+                                            }])
     return _parse_response(response)
 
 
-def _parse_response(response) -> List[str]:
+def _parse_response(response) -> Iterable[Song]:
     """
-    TODO
-    {
-      "choices": [
-        {
-          "finish_reason": "stop",
-          "index": 0,
-          "logprobs": null,
-          "text": "\n\nThis is indeed a test!"
-        }
-      ],
-      "created": 1682843554,
-      "id": "cmpl-7AwludjmaCwpALLbEt0iOoBzbCyDN",
-      "model": "text-davinci-003",
-      "object": "text_completion",
-      "usage": {
-        "completion_tokens": 8,
-        "prompt_tokens": 6,
-        "total_tokens": 14
-      }
-    }
+    Process the OpenAIObject and returns the message content
     """
-    # data = json.load(response)
-    # print(type(response))
-    # print(response)
+    content = response.choices[0].message.content
+    print(content)
+    return _get_songs(content)
 
-    return [x.text for x in response.choices]
+
+def _get_songs(content: str) -> Iterable[Song]:
+    """
+    Retrieves all songs from ChatGPT content
+    """
+    songs = json.loads(content).get('songs')
+    for song in songs:
+        artist = song.get('artist')
+        title = song.get('title')
+        if artist and title:
+            yield Song(artist=artist, title=title)
