@@ -1,22 +1,16 @@
 import json
 import os
-from typing import Iterable, NamedTuple
+from typing import Iterable
 
 import openai
 
 from musique.utils.json_schema import JSON_SCHEMA
+from musique.types import Song
+
 
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
 _MODEL = 'gpt-3.5-turbo'
-
-
-class Song(NamedTuple):
-    """
-    Immutable object that stores a NeurIPS conference url and year
-    """
-    artist: str
-    title: str
 
 
 def ask_chatgpt(prompt: str) -> Iterable[Song]:
@@ -39,7 +33,6 @@ def _parse_response(response) -> Iterable[Song]:
     Process the OpenAIObject and returns the message content
     """
     content = response.choices[0].message.content
-    print(content)
     return _get_songs(content)
 
 
