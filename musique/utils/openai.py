@@ -7,7 +7,6 @@ import openai
 from musique.utils.json_schema import JSON_SCHEMA
 from musique.types import Song
 
-
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
 _MODEL = 'gpt-3.5-turbo'

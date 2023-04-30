@@ -6,7 +6,6 @@ from spotipy.oauth2 import SpotifyOAuth
 
 from musique.types import Song
 
-
 _CLIENT_ID = os.getenv("SPOTIFY_CLIENT_ID")
 _CLIENT_SECRET = os.getenv("SPOTIFY_CLIENT_SECRET")
 _REDIRECT_URI = os.getenv("SPOTIFY_REDIRECT_URI")
@@ -19,7 +18,8 @@ def create_playlist(playlist_name: str, songs: List[Song]) -> int:
     Note that first it creates the list and then adds the songs.
     """
     scope = "playlist-modify-public"
-    sp_client = spotipy.Spotify(auth_manager=SpotifyOAuth(_CLIENT_ID, _CLIENT_SECRET, _REDIRECT_URI, scope=scope))
+    sp_client = spotipy.Spotify(auth_manager=SpotifyOAuth(
+        _CLIENT_ID, _CLIENT_SECRET, _REDIRECT_URI, scope=scope))
     user = sp_client.me()
     user_id = user["id"]
 
