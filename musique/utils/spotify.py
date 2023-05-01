@@ -15,7 +15,7 @@ def create_playlist(playlist_name: str, songs: List[Song]) -> int:
     """
     Creates the playlist given the name and the list of songs
 
-    Note that first it creates the list and then adds the songs.
+    Note that creates the list first and then adds the songs.
     """
     scope = "playlist-modify-public"
     sp_client = spotipy.Spotify(auth_manager=SpotifyOAuth(
@@ -39,6 +39,12 @@ def _create_new_playlist(sp_client, user_id, playlist_name):
 
 
 def _search_tracks(sp_client, songs: List[Song]):
+    """
+    Search for the track songs.
+
+    Printing out which songs were found or not found in Spotify.
+    TODO: Include Spotify's behavior as a log
+    """
     track_ids = []
     for song in songs:
         query = f'artist:{song.artist} track:{song.title}'
@@ -53,5 +59,8 @@ def _search_tracks(sp_client, songs: List[Song]):
 
 
 def add_songs_to_playlist(sp_client, user_id, playlist_id, track_ids) -> int:
+    """
+    Add songs to the playlist
+    """
     sp_client.user_playlist_add_tracks(user_id, playlist_id, track_ids)
     return len(track_ids)

@@ -16,7 +16,9 @@ def ask_chatgpt(prompt: str) -> Iterable[Song]:
     """
     Return processed answer from chatGPT given a prompt
     """
-    prompt_with_format = f'{prompt} in using the following json schema {JSON_SCHEMA}'
+    prompt_data = 'includes the artist and the name of the song'
+    prompt_format = f'using the following json schema {JSON_SCHEMA}'
+    prompt_with_format = f'{prompt} that {prompt_data} and {prompt_format}'
     response = openai.ChatCompletion.create(model=_MODEL,
                                             messages=[{
                                                 "role":

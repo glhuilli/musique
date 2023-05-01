@@ -24,7 +24,7 @@ Installation
 
    .. code-block:: shell
 
-       pip install openai spotipy
+       pip install -r requirements.txt
 
 3. Set the following environment variables:
 
@@ -37,10 +37,17 @@ Installation
 
    .. code-block:: shell
 
-       export SPOTIPY_CLIENT_ID='your_client_id'
-       export SPOTIPY_CLIENT_SECRET='your_client_secret'
-       export SPOTIPY_REDIRECT_URI='your_redirect_uri'
+       export SPOTIFY_CLIENT_ID='your_client_id'
+       export SPOTIFY_CLIENT_SECRET='your_client_secret'
+       export SPOTIFY_REDIRECT_URI='your_redirect_uri'
        export OPENAI_API_KEY='your_openai_api_key'
+
+
+   Also you can modify the credentials.sample.sh with these values, rename the file to `credentials.sh` and
+
+   .. code-block:: shell
+
+       source credentials.sh
 
 
 Usage
